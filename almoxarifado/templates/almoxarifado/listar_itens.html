@@ -1,0 +1,232 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Itens Cadastrados</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #002F26;
+      color: white;
+    }
+
+    header {
+      background-color: #004d3a;
+      color: white;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header a {
+      color: white;
+      text-decoration: none;
+      margin-left: 15px;
+      font-weight: bold;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 10px;
+    }
+
+    .item-card {
+      background-color: white;
+      color: #222;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+
+    .item-info {
+      margin-bottom: 8px;
+    }
+
+    .item-info strong {
+      display: inline-block;
+      width: 100px;
+    }
+
+    .image-carousel {
+      display: flex;
+      overflow-x: auto;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .image-carousel img {
+      width: 200px;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 6px;
+    }
+
+    @media (max-width: 768px) {
+      .image-carousel img {
+        width: 150px;
+        height: 150px;
+      }
+    }
+
+    .action-buttons {
+      margin-top: 10px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .edit-btn,
+    .delete-btn {
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 5px;
+      font-weight: bold;
+      font-size: 0.9rem;
+      display: inline-block;
+    }
+
+    .edit-btn {
+      background-color: #3498db;
+      color: white;
+    }
+
+    .edit-btn:hover {
+      background-color: #2980b9;
+    }
+
+    .delete-btn {
+      background-color: #e74c3c;
+      color: white;
+    }
+
+    .delete-btn:hover {
+      background-color: #c0392b;
+    }
+
+    #carregando {
+      text-align: center;
+      padding: 20px;
+      display: none;
+      color: #80FFBF;
+    }
+  </style>
+</head>
+<body>
+  <header style="position: sticky; top: 0; z-index: 999; background-color: #004d3a; color: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center;">
+    <h2 style="margin: 0;">📦 Itens Cadastrados</h2>
+    <div style="display: flex; gap: 15px;">
+      <a href="{% url 'dashboard' %}" style="
+      font-size: 18px;
+      background-color: #25D366;
+      color: #002F26;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      margin-right: 10px;
+      display: inline-block;
+      transition: background-color 0.3s;
+    ">Voltar</a>
+    
+    <a href="{% url 'logout' %}" style="
+      font-size: 18px;
+      background-color: #e74c3c;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      display: inline-block;
+      transition: background-color 0.3s;
+    ">Sair</a>
+    
+    </div>
+  </header>
+  
+
+  <div class="container">
+    <div style="margin-bottom: 20px;">
+      <input
+        type="text"
+        id="filtro"
+        placeholder="🔍 Buscar por nome, código, descrição ou quantidade..."
+        style="width: 100%; padding: 12px; font-size: 1rem; border-radius: 8px; border: none; outline: none;">
+    </div>
+  
+    <div id="itens-container">
+      {% for item in itens %}
+        {% include 'almoxarifado/parcial_item.html' %}
+      {% endfor %}
+    </div>
+  </div>
+  
+  <div id="carregando">Carregando mais itens...</div>
+  <script>
+    const campoFiltro = document.getElementById("filtro");
+
+    campoFiltro.addEventListener("input", function () {
+      const termo = this.value.trim();
+    
+      pagina = 2; // reset scroll
+      carregando = false;
+    
+      if (termo === "") {
+        fetch("{% url 'listar_itens' %}", {
+          headers: { "x-requested-with": "XMLHttpRequest" }
+        })
+          .then(res => res.text())
+          .then(html => {
+            document.getElementById('itens-container').innerHTML = html;
+          });
+      
+        return;
+      }
+      
+    
+      fetch(`{% url 'listar_itens' %}?busca=${encodeURIComponent(termo)}`, {
+        headers: { "x-requested-with": "XMLHttpRequest" }
+      })
+        .then(res => res.text())
+        .then(html => {
+          document.getElementById('itens-container').innerHTML = html;
+        });
+    });
+    
+    
+  </script>
+  
+  <script>
+    let pagina = 2;
+    let carregando = false;
+    window.addEventListener('scroll', () => {
+      if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 100 && !carregando) {
+        carregando = true;
+        document.getElementById('carregando').style.display = 'block';
+
+        fetch(`{% url 'listar_itens' %}?page=${pagina}`)
+          .then(res => res.text())
+          .then(html => {
+            if (html.trim() !== "") {
+              document.getElementById('itens-container').insertAdjacentHTML('beforeend', html);
+              pagina++;
+              carregando = false;
+              document.getElementById('carregando').style.display = 'none';
+            } else {
+              document.getElementById('carregando').textContent = "Todos os itens foram carregados.";
+            }
+          });
+      }
+    });
+  </script>
+
+</body>
+</html>

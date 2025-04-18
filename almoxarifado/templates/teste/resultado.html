@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Resultado do Teste de Conexão</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      background-color: #002f2f;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      padding: 40px;
+      margin: 0;
+    }
+
+    .container {
+      background-color: #013d3d;
+      max-width: 900px;
+      margin: auto;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.4);
+    }
+
+    h2, h3 {
+      color: #a0ffe1;
+      text-align: center;
+    }
+
+    .section {
+      margin-bottom: 20px;
+    }
+
+    pre {
+      background-color: #011f1f;
+      color: #c0ffc0;
+      padding: 20px;
+      border-radius: 10px;
+      overflow-x: auto;
+      font-family: 'Courier New', monospace;
+      white-space: pre-wrap;
+    }
+
+    .erro {
+      color: #ff6b6b;
+      background-color: #330000;
+      padding: 20px;
+      border-radius: 10px;
+      font-weight: bold;
+    }
+
+    .resumo {
+      background-color: #444;
+      padding: 15px;
+      border-radius: 10px;
+    }
+
+    .back {
+      margin-top: 25px;
+      text-align: center;
+    }
+
+    .back a {
+      background-color: #25d366;
+      color: white;
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .back a:hover {
+      background-color: #1da955;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 20px 10px;
+      }
+
+      .container {
+        padding: 20px;
+      }
+
+      pre {
+        font-size: 0.9rem;
+        padding: 15px;
+      }
+
+      .back a {
+        padding: 10px 16px;
+        font-size: 0.9rem;
+      }
+
+      h2 {
+        font-size: 1.3rem;
+      }
+
+      h3 {
+        font-size: 1.1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🚀 Resultado do Teste de Conexão</h2>
+
+    {% if erro %}
+    <div class="erro">
+      ❌ Erro ao realizar o teste:<br>
+      <pre>{{ erro }}</pre>
+    </div>
+    {% endif %}
+
+    {% if output %}
+    <div class="section">
+      <h3>📊 Detalhes da Conexão HTTP</h3>
+      <div class="resumo">
+        <p><strong>Tipo:</strong> Conexão HTTP</p>
+        <p><strong>Endpoint:</strong> http://127.0.0.1:8000/</p>
+        <p><strong>Sucesso:</strong> {% if erro %} Não {% else %} Sim {% endif %}</p>
+        <p><strong>Detalhes:</strong> {{ output }}</p>
+      </div>
+    </div>
+    {% endif %}
+
+    {% if rtt %}
+    <div class="section">
+      <h3>📦 Qualidade da Conexão</h3>
+      {% if rtt < 0 %}
+        <pre>Conexão muito boa 🚀</pre>
+      {% elif rtt <= 0.050 %}
+        <pre>Conexão normal ✅</pre>
+      {% else %}
+        <pre>Conexão instável ⚠️</pre>
+      {% endif %}
+    </div>
+
+    <div class="section">
+      <h3>⏱️ Tempo de Resposta (RTT)</h3>
+      <pre>{{ rtt }} segundos</pre>
+    </div>
+    {% endif %}
+
+    {% if estimativa_rps %}
+    <div class="section">
+      <h3>📈 Estimativa de Requisições que o Servidor Aguenta por Segundo</h3>
+      <pre>{{ estimativa_rps }} req/s</pre>
+    </div>
+    {% endif %}
+
+    {% if ping_erro %}
+    <div class="erro">
+      ⚠️ Erro ao realizar o ping:<br>
+      <pre>{{ ping_erro }}</pre>
+    </div>
+    {% endif %}
+
+    <div class="back">
+      <a href="{% url 'estatisticas_gerais' %}">⬅ Voltar para estatísticas</a>
+    </div>
+  </div>
+</body>
+</html>

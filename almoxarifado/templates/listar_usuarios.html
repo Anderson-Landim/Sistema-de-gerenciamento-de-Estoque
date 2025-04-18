@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lista de Usuários</title>
+  <style>
+    body {
+      background-color: #002f26;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      background-color: #002f36;
+      padding: 30px 20px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    }
+
+    h2 {
+      text-align: center;
+      color: #b2ffb2;
+      margin-bottom: 30px;
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+      border-radius: 10px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: #003d00;
+      min-width: 600px;
+    }
+
+    th, td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid #006600;
+    }
+
+    th {
+      background-color: #006400;
+      color: #dfffe0;
+    }
+
+    tr:hover {
+      background-color: #004d00;
+    }
+
+    .dashboard-button {
+      background-color: #e74c3c;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .dashboard-button:hover {
+      background-color: #c0392b;
+    }
+
+    .btn-voltar {
+      margin-top: 30px;
+      background-color: #3498db;
+      display: inline-block;
+    }
+
+    /* RESPONSIVO */
+    @media (max-width: 768px) {
+      .container {
+        padding: 20px 10px;
+      }
+
+      .table-wrapper {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      table {
+        min-width: 600px;
+        font-size: 0.9rem;
+      }
+
+      th, td {
+        padding: 10px 12px;
+      }
+
+      .dashboard-button, .btn-voltar {
+        font-size: 1rem;
+        padding: 12px 16px;
+        margin-top: 15px;
+        width: 100%;
+      }
+      .btn-voltar {
+        font-size: 1rem;
+        padding: 12px 16px;
+        margin-top: 15px;
+        width: 60%;
+      }
+
+      h2 {
+        font-size: 1.4rem;
+      }
+
+      .dashboard-button {
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Usuários Cadastrados</h2>
+
+    {% if usuarios %}
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Usuário</th>
+            <th>Email</th>
+            <th>Categoria</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for usuario in usuarios %}
+          <tr>
+            <td>{{ usuario.username }}</td>
+            <td>{{ usuario.email }}</td>
+            <td>{{ usuario.get_categoria_display }}</td>
+            <td>
+              <form action="{% url 'remover_usuario' usuario.id %}" method="post" style="display:inline;">
+                {% csrf_token %}
+                <button class="dashboard-button" type="submit" onclick="return confirm('Tem certeza que deseja remover este usuário?');">
+                  Remover
+                </button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <p style="text-align: center; margin-top: 20px;">Nenhum usuário cadastrado.</p>
+    {% endif %}
+
+    <div style="text-align: center;">
+      <a href="{% url 'dashboard' %}" class="dashboard-button btn-voltar">⬅ Voltar para o Painel</a>
+    </div>
+  </div>
+</body>
+</html>

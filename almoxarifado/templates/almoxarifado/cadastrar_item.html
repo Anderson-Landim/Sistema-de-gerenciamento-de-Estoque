@@ -1,0 +1,187 @@
+{% load widget_tweaks %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Cadastrar Item</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap local -->
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+
+  <style>
+    body {
+      background-color: #002F26;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .container-form {
+      background-color: #fff;
+      color: #000;
+      border-radius: 20px;
+      padding: 40px;
+      margin-top: 50px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+
+    .form-label {
+      font-weight: 600;
+    }
+
+    .form-control {
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 1rem;
+    }
+
+    .btn-upload {
+      padding: 12px 20px;
+      font-size: 1rem;
+      border-radius: 10px;
+      margin-top: 6px;
+    }
+
+    .btn-save {
+      font-size: 1.1rem;
+      padding: 12px 32px;
+      font-weight: bold;
+      border-radius: 10px;
+    }
+
+    .preview-img {
+      max-width: 120px;
+      max-height: 120px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin: 5px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-10 col-lg-8">
+      <div class="container-form">
+
+        <h2 class="text-center mb-4">📦 Cadastrar Novo Item</h2>
+
+        {% if messages %}
+          <div class="col-12">
+            {% for message in messages %}
+              <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        <form method="POST" enctype="multipart/form-data" class="row g-4 needs-validation" novalidate>
+          {% csrf_token %}
+
+          <!-- Código -->
+          <div class="col-md-6">
+            <label for="{{ item_form.codigo.id_for_label }}" class="form-label">Código do Item</label>
+            {{ item_form.codigo|add_class:"form-control" }}
+            {% if item_form.codigo.errors %}
+              <div class="text-danger small">{{ item_form.codigo.errors }}</div>
+            {% endif %}
+          </div>
+
+          <!-- Nome -->
+          <div class="col-md-6">
+            <label for="{{ item_form.nome.id_for_label }}" class="form-label">Nome do Item</label>
+            {{ item_form.nome|add_class:"form-control" }}
+            {% if item_form.nome.errors %}
+              <div class="text-danger small">{{ item_form.nome.errors }}</div>
+            {% endif %}
+          </div>
+
+          <!-- Descrição -->
+          <div class="col-12">
+            <label for="{{ item_form.descricao.id_for_label }}" class="form-label">Descrição</label>
+            {{ item_form.descricao|add_class:"form-control" }}
+            {% if item_form.descricao.errors %}
+              <div class="text-danger small">{{ item_form.descricao.errors }}</div>
+            {% endif %}
+          </div>
+
+          <!-- Quantidade -->
+          <div class="col-md-6">
+            <label for="{{ item_form.quantidade.id_for_label }}" class="form-label">Quantidade</label>
+            {{ item_form.quantidade|add_class:"form-control" }}
+            {% if item_form.quantidade.errors %}
+              <div class="text-danger small">{{ item_form.quantidade.errors }}</div>
+            {% endif %}
+          </div>
+
+          <!-- Imagens -->
+          <div class="col-md-6">
+            <label for="id_imagens" class="form-label">Imagens do Item</label>
+            <input type="file" name="imagens" id="id_imagens" class="form-control btn-upload" multiple>
+            <div id="preview" class="mt-2 d-flex flex-wrap"></div>
+          </div>
+
+          <!-- Botão -->
+          <div class="col-12 text-center mt-4">
+            <button type="submit" class="btn btn-success btn-save" id="btnSalvar">
+              <span id="btnText">Salvar Item</span>
+              <span id="btnSpinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+            </button>
+          </div>
+          <a href="{% url 'dashboard' %}" class="btn btn-success btn-save" style="background-color: #3498db;">Voltar para o Painel</a>
+
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap local JS -->
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+
+<script>
+  // Animação ao clicar em "Salvar"
+  document.querySelector("form").addEventListener("submit", function () {
+    const btn = document.getElementById("btnSalvar");
+    btn.disabled = true;
+    document.getElementById("btnText").textContent = "Salvando...";
+    document.getElementById("btnSpinner").classList.remove("d-none");
+  });
+
+  // Preview de imagens
+  document.getElementById('id_imagens').addEventListener('change', function (event) {
+    const previewDiv = document.getElementById('preview');
+    previewDiv.innerHTML = '';
+
+    for (let file of event.target.files) {
+      if (file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const img = document.createElement('img');
+          img.src = e.target.result;
+          img.classList.add('preview-img');
+          previewDiv.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+  });
+
+  // Esconder alertas após 3 segundos
+  setTimeout(() => {
+    const alerts = document.querySelectorAll('.alert');
+    alerts.forEach(alert => {
+      alert.classList.remove('show');
+      alert.classList.add('fade');
+    });
+  }, 3000);
+</script>
+
+</body>
+</html>

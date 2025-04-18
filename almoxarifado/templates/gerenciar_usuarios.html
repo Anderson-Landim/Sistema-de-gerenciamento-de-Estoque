@@ -1,0 +1,141 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Gerenciar Usuários</title>
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      background-color: #002F25;
+      color: white;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 20px;
+    }
+
+    h1 {
+      color: #80FFBF;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .dashboard-button {
+      background-color: #25D366;
+      color: black;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-weight: bold;
+      text-decoration: none;
+      display: inline-block;
+      margin-bottom: 20px;
+      transition: background-color 0.3s ease;
+    }
+
+    .dashboard-button:hover {
+      background-color: #1DA955;
+    }
+
+    .table-container {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      background-color: #ffffff;
+      color: #000;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    th, td {
+      padding: 14px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #004D3A;
+      color: white;
+      font-size: 0.95rem;
+    }
+
+    tr:hover {
+      background-color: #e8f5f1;
+    }
+
+    .label-vazio {
+      color: #888;
+      font-style: italic;
+    }
+
+    .last-access {
+      font-size: 0.85rem;
+      color: #555;
+    }
+
+    @media (max-width: 768px) {
+      th, td {
+        font-size: 0.85rem;
+        padding: 10px;
+      }
+
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      .dashboard-button {
+        width: 100%;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  {% if user.categoria == 'almoxarife_cadastrado' %}
+    <a class="dashboard-button" href="{% url 'cadastrar_item' %}">📦 Cadastrar Itens</a>
+  {% endif %}
+
+  <h1>📊 Painel de Usuários</h1>
+
+  {% if usuarios %}
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>👤 Usuário</th>
+            <th>📧 Email</th>
+            <th>🛠️ Categoria</th>
+            <th>📅 Último Acesso</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for usuario in usuarios %}
+            <tr>
+              <td>{{ usuario.username }}</td>
+              <td>{{ usuario.email }}</td>
+              <td>{{ usuario.get_categoria_display }}</td>
+              <td>
+                {% if usuario.last_login %}
+                  <span class="last-access">{{ usuario.last_login|date:"d/m/Y H:i" }}</span>
+                {% else %}
+                  <span class="label-vazio">Nunca acessou</span>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p class="mt-4">Nenhum usuário encontrado.</p>
+  {% endif %}
+
+  <br><br>
+  <a href="{% url 'dashboard_super_admin' %}" class="dashboard-button">⬅ Voltar para o Dashboard</a>
+
+</body>
+</html>

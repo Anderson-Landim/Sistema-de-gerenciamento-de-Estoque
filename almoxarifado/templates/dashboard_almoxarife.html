@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel do Almoxarife</title>
+  <style>
+    body {
+      background-color: #002F00;
+      color: #fff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background-color: #014d01;
+      padding: 30px 20px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #b2ffb2;
+      font-size: 1.8rem;
+    }
+
+    .dashboard-button {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 15px 0;
+      padding: 14px 20px;
+      font-size: 1rem;
+      font-weight: bold;
+      border: none;
+      text-decoration: none;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      color: #fff;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .dashboard-button i {
+      font-size: 1.3rem;
+    }
+
+    .dashboard-button:hover {
+      transform: scale(1.03);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    .btn-cadastrar {
+      background: linear-gradient(135deg, #1b5e20, #43a047);
+    }
+
+    .btn-gerenciar {
+      background: linear-gradient(135deg, #33691e, #76ff03);
+      color: #111;
+    }
+
+    .btn-importar {
+      background: linear-gradient(135deg, #004d40, #1de9b6);
+    }
+
+    .dashboard-button.logout {
+      background: linear-gradient(135deg, #d50000, #ff5252);
+      color: white;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      .dashboard-button {
+        font-size: 0.95rem;
+        padding: 12px 16px;
+        gap: 10px;
+      }
+
+      .dashboard-button i {
+        font-size: 1.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📋 Painel do Almoxarife</h1>
+
+    <a class="dashboard-button btn-cadastrar" href="{% url 'cadastrar_item' %}">
+      <i>📦</i> Cadastrar Item
+    </a>
+
+    <a class="dashboard-button btn-gerenciar" href="{% url 'listar_itens' %}">
+      <i>🛠️</i> Gerenciar Itens
+    </a>
+
+    <a class="dashboard-button btn-importar" href="{% url 'importar_excel' %}">
+      <i>📤</i> Atualizar Banco de Dados
+    </a>
+
+    <a class="dashboard-button logout" href="{% url 'logout' %}">
+      <i>🚪</i> Sair
+    </a>
+  </div>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Painel do Super Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      background-color: #002F26;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 40px 20px;
+    }
+
+    .container {
+        
+      max-width: 900px;
+      margin: 0 auto;
+      background-color: #90EE90;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #2d3436;
+    }
+
+    .button-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+
+    .dashboard-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 24px;
+      font-size: 1rem;
+      font-weight: bold;
+      border: none;
+      text-decoration: none;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      color: white;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      min-width: 230px;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .dashboard-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-cadastrar-almoxarife {
+      background: linear-gradient(135deg, #00b894, #55efc4);
+    }
+
+    .btn-gerenciar-usuarios {
+      background: linear-gradient(135deg, #0984e3, #74b9ff);
+    }
+
+    .btn-remover-almoxarife {
+      background: linear-gradient(135deg, #d63031, #ff7675);
+    }
+
+    .btn-cadastrar-item {
+      background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+    }
+
+    .btn-gerenciar-itens {
+      background: linear-gradient(135deg, #e17055, #fab1a0);
+      color: #222;
+    }
+
+    .btn-importar-excel {
+      background: linear-gradient(135deg, #00cec9, #81ecec);
+      color: #222;
+    }
+
+    .btn-estatisticas {
+      background: linear-gradient(135deg, #fd79a8, #ffeaa7);
+      color: #222;
+    }
+    .btn-sair {
+        background: linear-gradient(135deg, #d50000, #ff5252);
+        color: #222;
+      }
+
+    .dashboard-button i {
+      font-size: 1.3rem;
+    }
+
+    @media (max-width: 600px) {
+      .dashboard-button {
+        min-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📋 Painel do Super Admin</h1>
+    <div class="button-grid">
+      <a class="dashboard-button btn-cadastrar-almoxarife" href="{% url 'cadastrar_almoxarife' %}">
+        <i>👷</i> Cadastrar Almoxarife
+      </a>
+
+      <a class="dashboard-button btn-gerenciar-usuarios" href="{% url 'gerenciar_usuarios' %}">
+        <i>👥</i> Gerenciar Usuários
+      </a>
+
+      <a class="dashboard-button btn-remover-almoxarife" href="{% url 'listar_almoxarifes' %}">
+        <i>🗑️</i> Remover Almoxarife
+      </a>
+
+      <a class="dashboard-button btn-cadastrar-item" href="{% url 'cadastrar_item' %}">
+        <i>📦</i> Cadastrar Item
+      </a>
+
+      <a class="dashboard-button btn-gerenciar-itens" href="{% url 'listar_itens' %}">
+        <i>🛠️</i> Gerenciar Itens
+      </a>
+
+      <a class="dashboard-button btn-importar-excel" href="{% url 'importar_excel' %}">
+        <i>📤</i> Atualizar Banco de Dados
+      </a>
+
+      <a class="dashboard-button btn-estatisticas" href="{% url 'estatisticas_gerais' %}">
+        <i>📊</i> Estatísticas Gerais
+        
+      </a>
+      <a class="dashboard-button btn-sair" href="{% url 'logout' %}">Sair</a>
+
+    </div>
+    
+  </div>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Suporte - UltraCheese</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #002F26;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+    }
+
+    h1 {
+      color: #80FFBF;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .support-card {
+      background-color: #004D3A;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      max-width: 500px;
+      width: 100%;
+    }
+
+    .support-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .support-table td {
+      padding: 9px;
+      border-bottom: 1px solid #2d5c4d;
+      font-size: 1rem;
+      word-break: break-word;  /* <- Adicionado */
+    }
+
+    .support-table td:first-child {
+      font-weight: bold;
+      width: 40%;
+      color: #80FFBF;
+    }
+
+    .support-table a {
+      color: #80FFBF;
+      text-decoration: none;
+    }
+
+    .support-table a:hover {
+      text-decoration: underline;
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+    }
+
+    .whatsapp-button,
+    .voltar {
+      background-color: #1e4c3d;
+      color: white;
+      padding: 10px 16px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: background-color 0.3s ease;
+      text-align: center;
+      flex: 1 1 auto;
+      max-width: 180px;
+      min-width: 140px;
+    }
+
+    .whatsapp-button:hover,
+    .voltar:hover {
+      background-color: #259f78;
+    }
+
+    @media (max-width: 600px) {
+      .support-card {
+        padding: 20px;
+      }
+
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      .button-group {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .whatsapp-button,
+      .voltar {
+        width: 100%;
+        max-width: 280px;
+      }
+    }
+
+    .email-text a {
+      font-size: 10px; 
+      word-break: break-word;
+    }
+    
+  </style>
+</head>
+<body>
+
+  <h1>Suporte Técnico</h1>
+
+  <div class="support-card">
+    <table class="support-table">
+      <tr>
+        <td>Problemas?</td>
+        <td>Fale comigo!</td>
+      </tr>
+      <tr>
+        <td>Nome:</td>
+        <td>Anderson Landim</td>
+      </tr>
+      <tr>
+        <td>WhatsApp:</td>
+        <td><a href="https://wa.me/5535997280595" target="_blank">(35) 99728-0595</a></td>
+      </tr>
+      <tr>
+        <td>Email corporativo:</td>
+        <td class="email-text">
+          <a href="mailto:anderson_landim@outlook.com.br">anderson_landim@outlook.com.br</a>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="button-group">
+    <a class="whatsapp-button" href="https://wa.me/5535997280595" target="_blank">
+      📲 Falar no WhatsApp
+    </a>
+    <a class="voltar" href="{% url 'index' %}">
+      Voltar à página inicial 📲
+    </a>
+  </div>
+
+</body>
+</html>

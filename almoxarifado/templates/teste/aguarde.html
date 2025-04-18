@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Testando Performance...</title>
+  <style>
+    body {
+      background-color: #002f2f;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .loader {
+      border: 8px solid #014d4d;
+      border-top: 8px solid #25d366;
+      border-radius: 50%;
+      width: 80px;
+      height: 80px;
+      animation: spin 1.2s linear infinite;
+      margin-bottom: 20px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    h2 {
+      color: #a0ffe1;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="loader"></div>
+  <h2>Executando teste de performance...<br>Isso pode levar alguns segundos.</h2>
+  <a href="{% url 'estatisticas_gerais' %}" style="font-size: 16px; color: #4CAF50; text-decoration: none; padding: 10px; background-color: #f1f1f1; border-radius: 5px;">
+    ⬅ Voltar para o painel
+  </a>
+
+
+  <script>
+    setInterval(() => {
+      fetch("{% url 'verificar_status' %}")
+        .then(response => response.json())
+        .then(data => {
+          if (data.finalizado) {
+            const url = `{% url 'resultado_teste' %}?erro=${encodeURIComponent(data.erro || '')}&output=${encodeURIComponent(data.output || '')}`;
+            window.location.href = url;
+          }
+        });
+    }, 2000);
+  </script>
+</body>
+
+</html>

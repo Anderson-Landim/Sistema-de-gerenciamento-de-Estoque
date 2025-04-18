@@ -1,0 +1,119 @@
+{% load static %}
+{% load widget_tweaks %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Editar Item</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+
+  <style>
+    body {
+      background-color: #002F26;
+      color: #fff;
+    }
+    .container-form {
+      background-color: #fff;
+      color: #000;
+      border-radius: 20px;
+      padding: 40px;
+      margin-top: 50px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+    .form-label {
+      font-weight: 600;
+    }
+    .form-control {
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 1rem;
+    }
+    .preview-img {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin: 5px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .btn-remove {
+      font-size: 0.8rem;
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-10 col-lg-8">
+      <div class="container-form">
+
+        <h2 class="text-center mb-4">✏️ Editar Item: {{ item.codigo }}</h2>
+
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+            </div>
+          {% endfor %}
+        {% endif %}
+
+        <form method="POST" enctype="multipart/form-data" class="row g-4 needs-validation" novalidate>
+          {% csrf_token %}
+
+          {% for field in form %}
+            {% if field.field.widget.input_type == "textarea" %}
+              <div class="col-12">
+            {% else %}
+              <div class="col-md-6">
+            {% endif %}
+                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                {{ field|add_class:"form-control" }}
+                {% if field.errors %}
+                  <div class="text-danger small">{{ field.errors }}</div>
+                {% endif %}
+              </div>
+          {% endfor %}
+
+          <!-- Upload de novas imagens -->
+          <div class="col-12">
+            <label class="form-label" for="novas_imagens">Adicionar novas imagens</label>
+            <input type="file" name="novas_imagens" id="novas_imagens" class="form-control" multiple>
+          </div>
+
+          <!-- Imagens atuais -->
+          {% if imagens %}
+            <div class="col-12">
+              <label class="form-label">Imagens atuais</label>
+              <div class="d-flex flex-wrap">
+                {% for imagem in imagens %}
+                  <div class="me-3 text-center">
+                    <img src="{{ imagem.imagem.url }}" class="preview-img" alt="Imagem">
+                    <div>
+                      <input type="checkbox" name="remover_imagens" value="{{ imagem.id }}" id="remover_{{ imagem.id }}">
+                      <label for="remover_{{ imagem.id }}" class="small">Remover</label>
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+          {% endif %}
+
+          <div class="col-12 text-center mt-4">
+            <button type="submit" class="btn btn-success btn-save px-4 py-2">Salvar Alterações</button>
+          </div>
+          <a href="{% url 'dashboard' %}" class="btn btn-success btn-save px-4 py-2" style="background-color: #3498db;">⬅ Voltar para o Painel</a>
+
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>

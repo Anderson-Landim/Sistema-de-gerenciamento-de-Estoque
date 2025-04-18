@@ -1,0 +1,263 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Catálogo de Itens</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #002F26;
+      color: white;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background-color: #004d3a;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: nowrap;
+    }
+
+    .header-title {
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: white;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+    }
+
+    .btn-home {
+      font-size: 16px;
+      background-color: #25D366;
+      color: #002F26;
+      padding: 10px 18px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn-home:hover {
+      background-color: #1dbb55;
+    }
+
+    .search-bar {
+      position: sticky;
+      top: 60px;
+      z-index: 999;
+      background-color: #002F26;
+      padding: 10px 20px;
+    }
+
+    .search-bar input {
+      width: 100%;
+      padding: 12px;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 20px;
+    }
+
+    .item-card {
+      background-color: white;
+      color: #222;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+
+    .item-info {
+      margin-bottom: 8px;
+    }
+
+    .item-info strong {
+      display: inline-block;
+      width: 100px;
+    }
+
+    .image-carousel img {
+      width: 250px;
+      height: 250px;
+      object-fit: cover;
+      border-radius: 6px;
+      cursor: pointer; /* opcional: para mostrar que pode clicar */
+      transition: transform 0.3s;
+    }
+    
+    .image-carousel img:hover {
+      transform: scale(1.05);
+    }
+    
+
+    @media (max-width: 768px) {
+      .image-carousel img {
+        width: 150px;
+        height: 150px;
+      }
+
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+
+      .header-actions {
+        width: 100%;
+        justify-content: flex-end;
+      }
+
+      .search-bar {
+        top: 108px;
+      }
+    }
+
+    #carregando {
+      text-align: center;
+      padding: 20px;
+      display: none;
+      color: #80FFBF;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-title">📦 Catálogo de Itens Públicos</div>
+    <div class="header-actions">
+      <a href="{% url 'index' %}" class="btn-home">🏠 Página Inicial</a>
+    </div>
+  </header>
+
+  <!-- BARRA DE BUSCA FIXA -->
+  <div class="search-bar">
+    <input
+      type="text"
+      id="filtro"
+      placeholder="🔍 Buscar por nome, código, descrição ou quantidade...">
+  </div>
+
+  <!-- LISTA DE ITENS -->
+  <div class="container">
+    <div id="itens-container">
+      {% for item in itens %}
+        {% include 'almoxarifado/parcial_item.html' %}
+      {% endfor %}
+    </div>
+    <div id="carregando">Carregando mais itens...</div>
+  </div>
+
+  <!-- SCRIPTS -->
+  <script>
+    const campoFiltro = document.getElementById("filtro");
+    let pagina = 2;
+    let carregando = false;
+    let buscando = false;
+    let timeout = null;
+  
+    campoFiltro.addEventListener("input", function () {
+      const termo = this.value.trim();
+      pagina = 2;
+      carregando = false;
+      buscando = termo !== "";
+  
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        const url = buscando
+          ? `{% url 'catalogo_publico' %}?busca=${encodeURIComponent(termo)}`
+          : `{% url 'catalogo_publico' %}`;
+  
+        fetch(url, {
+          headers: { "x-requested-with": "XMLHttpRequest" }
+        })
+          .then(res => res.text())
+          .then(html => {
+            document.getElementById('itens-container').innerHTML = html;
+          });
+      }, 300); // Aguarda 300ms antes de buscar
+    });
+  
+    window.addEventListener('scroll', () => {
+      if (buscando || carregando) return;
+  
+      if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 100) {
+        carregando = true;
+        document.getElementById('carregando').style.display = 'block';
+  
+        fetch(`{% url 'catalogo_publico' %}?page=${pagina}`, {
+          headers: { "x-requested-with": "XMLHttpRequest" }
+        })
+          .then(res => res.text())
+          .then(html => {
+            if (html.trim() !== "") {
+              document.getElementById('itens-container').insertAdjacentHTML('beforeend', html);
+              pagina++;
+              carregando = false;
+              document.getElementById('carregando').style.display = 'none';
+            } else {
+              document.getElementById('carregando').textContent = "Todos os itens foram carregados.";
+            }
+          });
+      }
+    });
+  </script>
+  
+  
+<!-- Modal para imagem -->
+<!-- Modal para imagem com botão de fechar -->
+<div id="imagemModal" style="display:none; position:fixed; z-index:9999; top:0; left:0; width:100vw; height:100vh; background-color:rgba(0,0,0,0.85); justify-content:center; align-items:center; flex-direction: column;">
+  <button id="fecharModal" style="align-self: flex-end; margin: 10px 20px 0 0; background: transparent; border: none; font-size: 30px; color: white; cursor: pointer;">✖</button>
+  <img id="imagemModalConteudo" style="max-width:90vw; max-height:80vh; border-radius:8px;" />
+</div>
+
+<script>
+  // Modal de imagem
+  const modal = document.getElementById("imagemModal");
+  const imagemModal = document.getElementById("imagemModalConteudo");
+  const btnFechar = document.getElementById("fecharModal");
+
+  document.addEventListener("click", function (e) {
+    if (e.target.tagName === "IMG" && e.target.closest(".image-carousel")) {
+      imagemModal.src = e.target.src;
+      modal.style.display = "flex";
+    }
+  });
+
+  btnFechar.addEventListener("click", function () {
+    modal.style.display = "none";
+    imagemModal.src = "";
+  });
+
+  // Fechar ao clicar fora da imagem (opcional, caso queira manter também)
+  modal.addEventListener("click", function (e) {
+    if (e.target === modal) {
+      modal.style.display = "none";
+      imagemModal.src = "";
+    }
+  });
+</script>
+
+
+</body>
+</html>

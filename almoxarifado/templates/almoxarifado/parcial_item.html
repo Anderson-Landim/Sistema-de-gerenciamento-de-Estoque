@@ -1,0 +1,27 @@
+{% load static %}
+
+{% for item in itens %}
+  <div class="item-card">
+    <div class="image-carousel">
+      {% if item.fotos.exists %}
+        {% for foto in item.fotos.all %}
+          <img src="{{ foto.imagem.url }}" alt="Foto do item">
+        {% endfor %}
+      {% else %}
+        <img src="{% static 'imagens/padrao.png' %}" alt="Imagem padrão">
+      {% endif %}
+    </div>
+    <div class="item-info"><strong>Código:</strong> {{ item.codigo }}</div>
+    <div class="item-info"><strong>Nome:</strong> {{ item.nome }}</div>
+    <div class="item-info"><strong>Descrição:</strong> {{ item.descricao|default:"(sem descrição)" }}</div>
+    <div class="item-info"><strong>Quantidade:</strong> {{ item.quantidade }}</div>
+
+    {% if user.is_authenticated %}
+      <div class="action-buttons">
+        <a href="{% url 'editar_item' item.id %}" class="edit-btn">✏️ Editar</a>
+        <a href="{% url 'remover_item' item.id %}" class="delete-btn"
+        onclick="return confirm('Tem certeza que deseja remover o item {{ item.codigo }}?');">🗑️ Excluir</a>
+      </div>
+    {% endif %}
+  </div>
+{% endfor %}
